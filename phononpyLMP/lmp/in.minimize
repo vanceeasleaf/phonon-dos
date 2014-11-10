@@ -1,0 +1,27 @@
+# 2D graphene block simulation
+boundary    p p p
+units       metal
+atom_style  atomic
+
+# geometry
+read_data data.pos
+mass 1 12.01
+
+neighbor 2.0 bin
+neigh_modify delay 5
+
+pair_style  	tersoff
+pair_coeff   	* * BNC.tersoff C
+fix 		8 all box/relax x 0 y 0 #nreset 1
+#fix 		8 all box/relax iso 0 #nreset 1
+min_style	cg
+minimize	1.0e-20 1.0e-14 1000000 1000000
+min_modify line quadratic
+
+
+timestep 2e-3
+reset_timestep 0
+# execution
+dump lala all custom 100 dump.force xs ys zs
+dump_modify lala element C 
+run 	 1

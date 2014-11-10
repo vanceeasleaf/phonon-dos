@@ -1,0 +1,101 @@
+LAMMPS (24 Apr 2013)
+units metal
+atom_style atomic
+boundary p p p
+dimension 3
+read_data data.pos
+  triclinic box = (0 0 0) to (9.838 8.51996 24.595) with tilt (4.919 0 0)
+  1 by 1 by 1 MPI processor grid
+  32 atoms
+mass 1 12.01
+pair_style tersoff
+pair_coeff * * BNC.tersoff C
+
+velocity  all  create  300 458127641 mom yes  rot yes dist gaussian
+neighbor 2.0 bin
+neigh_modify delay 3
+fix getEqu  all  nvt temp 300 300 .5e-1
+thermo 10000
+timestep .5e-3
+run 100000
+Memory usage per processor = 1.43915 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0          300   -254.92439            0   -253.72227    14987.482 
+   10000     302.5933   -253.84226            0   -252.62974    14766.723 
+   20000    257.39967    -253.3802            0   -252.34879    15653.587 
+   30000    353.56182   -254.01233            0   -252.59559    15093.936 
+   40000    295.83948   -253.56989            0   -252.38444    15483.146 
+   50000    385.89466   -253.53342            0   -251.98711    15258.363 
+   60000    288.62386   -253.82209            0   -252.66555    15210.651 
+   70000    227.64853   -253.65315            0   -252.74095    14946.553 
+   80000    234.28815   -253.49674            0   -252.55793     15144.56 
+   90000    354.19461   -253.91038            0    -252.4911    15265.022 
+  100000    277.79866   -253.28968            0   -252.17652    15103.219 
+Loop time of 11.7137 on 1 procs for 100000 steps with 32 atoms
+
+Pair  time (%) = 11.4025 (97.3434)
+Neigh time (%) = 0 (0)
+Comm  time (%) = 0.100091 (0.854471)
+Outpt time (%) = 0.000221252 (0.00188883)
+Other time (%) = 0.21088 (1.80028)
+
+Nlocal:    32 ave 32 max 32 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    194 ave 194 max 194 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  576 ave 576 max 576 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 576
+Ave neighs/atom = 18
+Neighbor list builds = 0
+Dangerous builds = 0
+unfix getEqu
+
+
+reset_timestep    0
+# -------------- Flux calculation in nve ---------------
+fix nve all nve
+#compute     myKE all ke/atom
+#compute     myPE all pe/atom
+#compute     myStress all stress/atom virial
+#compute      jflux all heat/flux myKE myPE myStress
+#fix ss all ave/correlate 5 20000 100000 vx vy vz type auto file j0jt.txt
+dump lala all custom 1 v1.txt id type vx vy vz
+run             100000
+Memory usage per processor = 1.59345 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0    277.79866   -253.28968            0   -252.17652    15103.219 
+   10000    377.61527   -253.69107            0   -252.17794    14888.228 
+   20000    316.33186   -253.44495            0   -252.17739    15006.097 
+   30000    300.48548   -253.38092            0   -252.17685    15318.221 
+   40000    362.88477   -253.63166            0   -252.17756    15144.255 
+   50000    359.23736   -253.61781            0   -252.17832    14959.667 
+   60000    305.77389   -253.40239            0   -252.17714    15065.879 
+   70000    368.48096    -253.6542            0   -252.17768    15563.118 
+   80000    374.91599   -253.68097            0   -252.17866    14967.142 
+   90000     361.6457   -253.62772            0   -252.17859    14403.604 
+  100000    326.40736   -253.48491            0   -252.17697    14962.079 
+Loop time of 16.4829 on 1 procs for 100000 steps with 32 atoms
+
+Pair  time (%) = 11.9885 (72.7329)
+Neigh time (%) = 0 (0)
+Comm  time (%) = 0.110913 (0.672901)
+Outpt time (%) = 4.23916 (25.7186)
+Other time (%) = 0.144322 (0.875591)
+
+Nlocal:    32 ave 32 max 32 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    194 ave 194 max 194 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+FullNghs:  576 ave 576 max 576 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 576
+Ave neighs/atom = 18
+Neighbor list builds = 0
+Dangerous builds = 0

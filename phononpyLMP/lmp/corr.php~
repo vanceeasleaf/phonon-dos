@@ -1,0 +1,38 @@
+<?php
+	$fp=fopen("v.txt","r");
+	$corr_len=100;
+	$autoCorr=array();
+	$vs=array();
+	for($i=0;$i<$corr_len;$i++){
+		$autoCorr[$i]=0;
+		$corNum[$i]=0;
+		$vs[$i]=array();
+	}
+	$timestep=0;
+	while(fgets($fp)){	
+		for($i=0;$i<2;$i++)fgets($fp);
+		$natom=fscanf($fp,"%d")[0];
+		for($i=0;$i<5;$i++)fgets($fp);
+		$step=$timestep%$corr_len;
+		for($i=0;$i<$natom;$i++){
+			list($vx,$vy,$vz)=fscanf($fp,"%f%f%f");			
+			$vs[$step]=array($vx,$vy,$vz);
+			$max_corlen=min($corr_len,$timestep);		
+			for($j=0;$j<$max_corlen;$j++){
+				$mapj=($timestep-$j)%$corr_len;
+				$autoCorr[$j]+=getCorr($vs[$mapj],$vs[$step]);
+				$corNum[$j]++;
+			}
+		}
+		$timestep++;
+		if($timestep%100==0)
+		echo $timestep."\n";
+	}
+	$factor=$autoCorr[0]/$corNum[0];
+	$fout=fopen("auto.txt","r");
+	for($i=0;$i<$corr_len;$i++)
+	fprintf($fout,"%f\n",$autoCorr[$i]/$corNum[$i]/$factor);
+	function getCorr($v1,$v2){
+		return $v1[0]*$v2[0]+$v1[1]*$v2[1]+$v1[2]*$v2[2];
+	}
+?>

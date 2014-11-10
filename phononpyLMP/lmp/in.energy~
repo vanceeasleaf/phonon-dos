@@ -1,0 +1,24 @@
+# 2D graphene block simulation
+boundary    p p p
+units       metal
+atom_style  atomic
+
+# geometry
+read_data data.pos
+mass 1 12
+
+neighbor 2.0 bin
+neigh_modify delay 5
+
+pair_style  	tersoff
+pair_coeff   	* * SiC.tersoff C
+
+
+
+timestep 2e-3
+variable etotal equal etotal
+fix extra all print 1 "$etotal" file dump.energy
+# execution
+#dump lala all custom 10000 dump.force TotEng
+#dump_modify lala element C 
+run 	 1

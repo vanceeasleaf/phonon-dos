@@ -1,0 +1,54 @@
+#include <stdio.h>
+	double  getCorr(double *v1,double *v2){
+		return v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2];
+	}
+	int min(int a,int b){
+		return a>b?b:a;
+	}
+int main(){
+	char filename[20]="v.txt";
+	char s[100];
+	FILE* fp=fopen(filename,"r");
+	int corr_len=1000;
+	double autoCorr[corr_len];
+	int corNum[corr_len];
+	for(int i=0;i<3;i++)fgets(s,100,fp);
+	int natom;
+	fscanf(fp,"%d\n",&natom);
+	fclose(fp);
+	
+	double  vs[corr_len][natom][3];
+	for(int i=0;i<corr_len;i++){
+		autoCorr[i]=0.0;
+		corNum[i]=0;
+		
+	}
+	int timestep=0;
+	fp=fopen(filename,"r");
+	while(fgets(s,100,fp)){	
+		for(int i=0;i<8;i++)fgets(s,100,fp);
+		int step=timestep%corr_len;
+		for(int i=0;i<natom;i++){
+			double vx,vy,vz;
+			fscanf(fp,"%lf%lf%lf\n",&vx,&vy,&vz);			
+			vs[step][i][0]=vx;
+			vs[step][i][1]=vy;
+			vs[step][i][2]=vz;
+			int max_corlen=min(corr_len,timestep);		
+			for(int j=0;j<max_corlen;j++){
+				int mapj=(timestep-j)%corr_len;
+				autoCorr[j]+=getCorr(vs[mapj][i],vs[step][i]);
+				
+				corNum[j]++;//printf("%d\n",corNum[j]);
+			}
+		}
+		timestep++;
+		if(timestep%corr_len==0)
+		printf("%d-%d\n",timestep,natom);
+	}
+	double factor=autoCorr[0]/corNum[0];
+	FILE* fout=fopen("auto2.txt","w");
+	for(int i=0;i<corr_len;i++)
+	fprintf(fout,"%f\n",autoCorr[i]/corNum[i]/factor);
+
+}

@@ -1,0 +1,6 @@
+用lammps生成band的方法
+lammps先生成POSCAR
+POSCAR和phonopy -d --dim="2 2 1"生成POSCARn
+用POSCARn算出vasprun.xmln
+使用vasprun.xmln,disp.yaml生成force_sets
+POSTCAR 和force_sets生成band

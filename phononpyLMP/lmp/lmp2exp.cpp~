@@ -1,0 +1,21 @@
+#include <stdio.h>
+int main(){
+	FILE* fp=fopen("v.txt","r");
+	FILE* fout=fopen("auto.vel","w");
+	int natom=32;
+	int timestep=0;
+	char s[100];
+	while(fgets(s,100,fp)){	
+		for(int i=0;i<8;i++)fgets(s,100,fp);
+		fprintf(fout,"%d 2.0\n",timestep,2.0*timestep);
+		for(int i=0;i<natom;i++){
+			fgets(s,100,fp);		
+			fprintf(fout,"%s",s);
+		}
+		timestep++;
+		if(timestep%1000==0)
+		printf("%d-%d\n",timestep,natom);
+	}
+	
+return 0;
+}
